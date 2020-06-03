@@ -4,3 +4,13 @@
 .profileInfoContent {
     padding-left: 17px;
 }
+.profileInfoContent img {
+    width:70px;
+    height: 70px;
+    
+}
+.lookingForAJobPhoto {
+    width:60px;
+    height: 60px;
+    
+}

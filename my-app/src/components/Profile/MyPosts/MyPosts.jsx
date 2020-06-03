@@ -1,48 +1,49 @@
 import React from 'react';
 import s from './MyPosts.module.css';
 import Post from './Post/Post';
-import {addPostActionCreator, updateNewPostTextActionCreator} from './../../../redux/profileReducer'
+import { Field, reduxForm } from 'redux-form';
+import { required, maxLengthCreator } from '../../../utils/validators/validators';
+import { Textarea } from '../../common/FormsControls/FormsControls';
+
+const maxLength10 = maxLengthCreator(10);
 
 
+const MyPosts = React.memo (props => {
 
 
-const MyPosts = (props) => {
+    let postsElement = props.profilePage.posts
+        .map(p => <Post message={p.message} likes={p.likes} />);
 
+    let addNewPost = (values) => {
+        props.addPost(values.newPostElement)
 
-let newPostElement = React.createRef();
-
-let postsElement = props.profilePage.posts
-.map (p => <Post message={p.message} likes= {p.likes}/> );
-
-let addPost = () => {
-    let text= newPostElement.current.value;
-    props.addPost();
-  
-}
-let onPostChange =() => {
-    let text= newPostElement.current.value;
-    props.updateNewPost(text);
-}
-
+    }
+    
 
     return (
-        <div className= {s.posts}>
-            
+        <div className={s.posts}>
+
             <h4>My Posts</h4>
-            <div>
-            <textarea ref= {newPostElement}
-            onChange= {onPostChange}
-            value= {props.profilePage.newPostText}/>
-            </div>
-            <div>
-                <button onClick= {addPost}>Add post</button>
-            </div>
-        {postsElement}
-           
+            <AddPostFormRedux onSubmit = {addNewPost}/>
+
+            {postsElement}
+
         </div>
     );
+});
+const AddPostForm = (props) => {
+    return (
+        <form onSubmit = {props.handleSubmit}>
+            <Field component = {Textarea}
+             name= 'newPostElement' 
+            validate = {[required, maxLength10 ]} 
+/>
+            <div>
+                <button>Add post</button>
+            </div>
+        </form>
+    )
 }
 
-
-
+const AddPostFormRedux = reduxForm({form:'profileAddPostForm'}) (AddPostForm);
 export default MyPosts;
